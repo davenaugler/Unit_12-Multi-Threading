@@ -11,7 +11,7 @@ public class SomeTask implements Callable<TaskDto> {
     static final double INT_MULTIPLIER = 1.5;
 
     @Override
-    public TaskDto call() throws Exception {
+    public TaskDto call() {
         TaskDto taskDto = new TaskDto();
         for (int i = 0; i < 1000000; i++) {
             Integer randomInt_1 = new Random().nextInt();
@@ -21,7 +21,7 @@ public class SomeTask implements Callable<TaskDto> {
 //                System.out.println("Random Value: " + randomValue);
         }
         taskID++;
-        System.out.println("Hey look at me, I'm taskID: " + taskID + "! I'm running on thread: " + Thread.currentThread().getName()); // + Hey look at me,... 50 times
+        System.out.println("Hey look at me, I'm taskID: " + taskID + "! I'm running on thread: " + Thread.currentThread().getName());
         taskDto.setFinished(true);
         return taskDto;
     }

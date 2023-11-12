@@ -1,15 +1,12 @@
 package com.coderscampus.lesson1;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class MultiThreadingApp {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         String message = "Starting";
         System.out.println(message); // + Starting
-        System.out.println(" Thread-" + Thread.currentThread().getName()); // + Thread-main
+        System.out.println("Thread-" + Thread.currentThread().getName()); // + Thread-main
 
         // * This starts up as many threads as there are iterations in the for loop.
         // * You only want to fire up a ton of threads, if those threads are going to
@@ -36,12 +33,21 @@ public class MultiThreadingApp {
         // ? IF this were a more I/O or HTTP request environment where you are waiting a lot, where it's not a CPU task.
         // ? It alleviates the guessing game on how many threads would be needed.
 
+// +++ TEST COMMENT FOR DAVE
+//        ExecutorService service = Executors.newSingleThreadExecutor();
+        for (int i = 0; i < 20; i++) {
+            // * CompletableFuture came out in Java 8
+            // + This gives us the ability of being notified when our task is completed, and execute that function for us
+            // + The main difference is that it does not block the main thread. While the .get() does.
 
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        for (int i = 0; i < 50; i++) {
+            CompletableFuture.supplyAsync(() -> new SomeTask())
+                             .thenApply(someTask -> someTask.call())
+                             .thenAccept(dto -> System.out.println("dto: " + dto));
 //            service.execute(new SomeTask());
-            Future<TaskDto> futureTask = service.submit(new SomeTask());
-            System.out.println("Future Task: " + i + " " + futureTask.get()); // + All 'Future Task's' (50 of them)
+            // * Futures were great prior to Java 8, but now we have something better
+//            Future<TaskDto> futureTask = service.submit(new SomeTask());
+            // ? The .get() will block the main thread and wait until that task is completed then we'll get the value for it
+//            System.out.println("Future Task: " + i + " " + futureTask.get()); // + All 'Future Task's' (50 of them)
         }
         message = "Done";
         System.out.println(message); // + Done
