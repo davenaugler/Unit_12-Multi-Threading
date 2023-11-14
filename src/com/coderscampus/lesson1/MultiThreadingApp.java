@@ -1,5 +1,7 @@
 package com.coderscampus.lesson1;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class MultiThreadingApp {
@@ -33,16 +35,22 @@ public class MultiThreadingApp {
         // ? IF this were a more I/O or HTTP request environment where you are waiting a lot, where it's not a CPU task.
         // ? It alleviates the guessing game on how many threads would be needed.
 
-// +++ TEST COMMENT FOR DAVE
-//        ExecutorService service = Executors.newSingleThreadExecutor();
+//        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        List<CompletableFuture<Void>> tasks = new ArrayList<>();
+
+        // This is how you get access to the ForkJoinPool's common pool,
+        //   which is the default thread pool that's used with CompletableFutures
+        //   if you do not specify an executor
         for (int i = 0; i < 20; i++) {
             // * CompletableFuture came out in Java 8
             // + This gives us the ability of being notified when our task is completed, and execute that function for us
             // + The main difference is that it does not block the main thread. While the .get() does.
 
-            CompletableFuture.supplyAsync(() -> new SomeTask())
+            CompletableFuture<Void> task = CompletableFuture.supplyAsync(() -> new SomeTask())
                              .thenApply(someTask -> someTask.call())
                              .thenAccept(dto -> System.out.println("dto: " + dto));
+            tasks.add(task);
 //            service.execute(new SomeTask());
             // * Futures were great prior to Java 8, but now we have something better
 //            Future<TaskDto> futureTask = service.submit(new SomeTask());
@@ -51,6 +59,13 @@ public class MultiThreadingApp {
         }
         message = "Done";
         System.out.println(message); // + Done
+        while(tasks.stream()
+                   .filter(CompletableFuture::isDone)
+                   .count() < 20) {
+            // This just loops and keeps the main thread alive
+            // until all threads are done working.
+        }
+
     }
 }
 
