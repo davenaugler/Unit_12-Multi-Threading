@@ -35,8 +35,7 @@ public class MultiThreadingApp {
         // ? IF this were a more I/O or HTTP request environment where you are waiting a lot, where it's not a CPU task.
         // ? It alleviates the guessing game on how many threads would be needed.
 
-//        ExecutorService executor = Executors.newSingleThreadExecutor();
-
+//      ExecutorService executor = Executors.newSingleThreadExecutor();
         List<CompletableFuture<Void>> tasks = new ArrayList<>();
 
         // This is how you get access to the ForkJoinPool's common pool,
