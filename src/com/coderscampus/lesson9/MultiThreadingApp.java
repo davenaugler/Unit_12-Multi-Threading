@@ -10,7 +10,7 @@ public class MultiThreadingApp {
     public static void main(String[] args) {
         String message = "Starting";
         System.out.println(message);
-        System.out.println("Thread-" + Thread.currentThread().getName()); 
+        System.out.println("Thread-" + Thread.currentThread().getName());
 
         // Single Thread is more performant in this situation
       ExecutorService cpuBoundTask = Executors.newSingleThreadExecutor();
@@ -42,40 +42,6 @@ public class MultiThreadingApp {
         ioBoundTask.shutdown();
     }
 }
-
-
-//package com.coderscampus.lesson9;
-//
-//import java.util.List;
-//import java.util.concurrent.CompletableFuture;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
-//import java.util.stream.Collectors;
-//import java.util.stream.IntStream;
-//
-//public class MultiThreadingApp {
-//    public static void main(String[] args) {
-//        System.out.println("Starting");
-//        System.out.println("Thread-" + Thread.currentThread().getName());
-//
-//        ExecutorService cpuBoundTask = Executors.newSingleThreadExecutor();
-//        ExecutorService ioBoundTask = Executors.newCachedThreadPool();
-//
-//        List<CompletableFuture<Void>> futures = IntStream.range(0, 20)
-//                .mapToObj(i -> CompletableFuture.supplyAsync(SomeTask::new, ioBoundTask)
-//                        .thenApplyAsync(SomeTask::doSomeWork, cpuBoundTask)
-//                        .thenApplyAsync(SomeTask::markComplete, ioBoundTask)
-//                        .thenAcceptAsync(dto -> System.out.println("dto: " + dto), ioBoundTask))
-//                .collect(Collectors.toList());
-//
-//        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-//
-//        System.out.println("Done");
-//
-//        cpuBoundTask.shutdown();
-//        ioBoundTask.shutdown();
-//    }
-//}
 
 
 
